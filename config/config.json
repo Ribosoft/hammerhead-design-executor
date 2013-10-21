@@ -1,0 +1,6 @@
+{
+    "db": {
+	"ribosoftDbUrl" : "mongodb://localhost/ribosoft-db",
+	"ribosoftTestDbUrl" : "mongodb://localhost/ribosoft-db-test"
+    }
+}
