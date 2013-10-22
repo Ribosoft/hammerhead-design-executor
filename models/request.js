@@ -1,7 +1,6 @@
 var mongoose = require('mongoose')
     path = require('path');
 var Schema = mongoose.Schema;
-console.log( "Setting up requests" );
 
 /************************ Request Schema *****************/
 var Request = new Schema({
@@ -12,6 +11,7 @@ var Request = new Schema({
     // 2 : Ready for processing
     // 3 : In-Processing
     // 4 : Processed
+    // 5 : Notified
     status : { type: Number, min: 1, max: 4, default:1 },
     state : {type : String, default:'\n'},
     sequence : {type: String, trim: true },
@@ -23,6 +23,10 @@ var Request = new Schema({
     mgEnv: {type: Number, default: 0},
     oligoEnv: {type: Number, default: 0},
     cutsites: [String],
+    left_arm_min : Number,
+    right_arm_min : Number,
+    left_arm_max : Number,
+    right_arm_max : Number,
     targetRegion : { type: Number, min: 3, max: 5, default:4 },
     //targetEnv = false for vitro, true for vivo
     targetEnv : Boolean,

@@ -4,6 +4,7 @@
   "description": "A wrapper script to execute hammerhead design requests",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "make test"
   },
   "repository": {
