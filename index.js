@@ -4,23 +4,26 @@ var scheduler = require('./lib/scheduler/'),
     mailer = require('./lib/mailer/');
 
 var timeoutPendingRequets = 0;
-var timeoutNotifications = 0; 
+var timeoutNotifications = 0;
 
-var launchPendingRequets = function(){
+var app = {};
+
+app.launchPendingRequests = function(callback){
     async.waterfall([
 	queryer.getCountPendingRequests,
 	executeNext(queryer.getNextRequest),
 	scheduler.startProcessingRequest
     ], function(err, requestId, timeoutInterval){
 	if(err)
-	    console.log( "Error "+err+" while launching pending requests.");
+	    callback(new Error("Error "+err+" while launching pending requests."));
+	else if(!requestId)
+	    callback(new Error("No pending requests exist"));
 	else
-	    console.log( "Successfully launched request:"+requestId );
+	    callback(null, requestId);
     });
-
 }
 
-var notifyFinishedRequests = function(){
+app.notifyFinishedRequests = function(){
     async.waterfall([
 	queryer.getCountFinishedRequests,
 	executeNext(queryer.getFinishedRequests),
@@ -37,7 +40,19 @@ var executeNext = function(next){
      return function(count, callback){
 	if(count > 0)
 	    queryer.getNextRequest(callback);
-	else
-	    callback(null);
+	else{
+	    callback(null, '');
+	}
     }
+}
+
+var executeScript = function(){
+    app.launchPendingRequests();    
+};
+
+
+if (module !== require.main) {
+    module.exports = exports = app;
+} else {
+    executeScript();
 }
