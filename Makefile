@@ -1,7 +1,7 @@
 REPORTER = dot
 
 test:
-	NODE_ENV=test node_modules/.bin/mocha test/test.algorithm.js --reporter $(REPORTER)
+	NODE_ENV=test node_modules/.bin/mocha --reporter $(REPORTER)
 
 #test-cov: lib-cov
 #  @INSTINCT_COV=1 $(MAKE) test REPORTER=html-cov > public/coverage.html
