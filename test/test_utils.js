@@ -1,11 +1,93 @@
 var fs = require('fs'),
+    mongoose = require('mongoose'),
+    rimraf = require('rimraf'),
     async = require('async');
 
+var Request = mongoose.model('Request');
 
 exports = module.exports = utils = {};
 
-utils.rmDirIfExists = function(pathToDir){
-    if(fs.existsSync(pathToDir)){
-        fs.rmdirSync(pathToDir);        
+function toTargetRegion(region){
+    switch(region){
+	case "ORF":
+	  return 4;
+	case "5\'":
+	  return 5;
+        case "3\'":
+	  return 3;
     }
+}
+
+utils.rmDirIfExists = function(pathToDir){
+    rimraf.sync(pathToDir);
+};
+
+utils.emptyDb = function(callback){
+    Request.find({}, function(err, requests){
+	if(err)
+	    callback("Error cleaning database "+err );
+	else {
+	    for(var i = 0; i < requests.length; ++i)
+	    {
+		requests[i].remove(function(err){
+		    if(err)
+			callback("Error cleaning database "+err);
+		});
+	    }
+	    setTimeout(callback, 1000);
+	}
+    });
+};
+
+utils.createRequest = function(id, test_data, callback){
+    var req = Request.createRequest(id,
+			  test_data.sequence,
+			  '',
+			  test_data.foldShape,
+			  test_data.temperature,
+			  test_data.naC,
+			  test_data.mgC,
+			  test_data.oligoC,
+			  test_data.cutsites,
+			  toTargetRegion(test_data.region),
+			  test_data.env.type,
+			  test_data.env.target,
+			  test_data.left_arm_min,
+			  test_data.right_arm_min,
+			  test_data.left_arm_max,
+			  test_data.right_arm_max,
+			  'ribosoft.mailer@gmail.com'
+			  )
+    callback(null, req);
+}
+
+utils.saveRequest = function(request, callback){
+    request.save(function(err, request){
+	if(err)
+	{
+	    callback(err);
+	}
+	else{
+	    callback(null, request);
+	}
+    });
+};
+
+utils.createPendingRequest = function(id, requestData, callback){
+    	async.waterfall(
+	    [
+		function(callback){
+		    callback(null, id, requestData);
+		},
+		utils.createRequest,
+		utils.saveRequest	    
+	    ],
+	    function(err, result){
+		if(err){
+		    callback(err);
+		}
+		else {
+		    callback(null, result.uuid);
+		}
+	    });
 };
