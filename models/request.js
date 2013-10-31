@@ -17,16 +17,16 @@ var Request = new Schema({
     sequence : {type: String, trim: true },
     accessionNumber : {type: String, default: '', trim : true},
     foldShape : String,
-    emailUser : String,
+    emailUser : {type: String, default: '', trim : true},
     tempEnv : {type: Number, default: 37},
     naEnv: {type: Number, default: 0},
     mgEnv: {type: Number, default: 0},
     oligoEnv: {type: Number, default: 0},
     cutsites: [String],
-    left_arm_min : Number,
-    right_arm_min : Number,
-    left_arm_max : Number,
-    right_arm_max : Number,
+    left_arm_min : {type: Number, default: 3},
+    right_arm_min : {type: Number, default: 3},
+    left_arm_max : {type: Number, default: 8},
+    right_arm_max : {type: Number, default: 8},
     targetRegion : { type: Number, min: 3, max: 5, default:4 },
     //targetEnv = false for vitro, true for vivo
     targetEnv : Boolean,
@@ -47,7 +47,12 @@ Request.statics = {
 			      cutsites,
 			      targetRegion,
 			      targetEnv,
-			      vivoEnv){
+			      vivoEnv,
+			     left_arm_min,
+			     right_arm_min,
+			     left_arm_max,
+			     right_arm_max,
+			     emailUser){
 	return new this({
             uuid : id,
             status : 2,
@@ -59,10 +64,15 @@ Request.statics = {
 	    mgEnv: mgEnv,
 	    oligoEnv: oligoEnv,
 	    cutsites: cutsites,
+	    left_arm_min : left_arm_min,
+	    right_arm_min : right_arm_min,
+	    left_arm_max : left_arm_max,
+	    right_arm_max : right_arm_max,
 	    targetRegion: targetRegion,
 	    targetEnv: targetEnv,
 	    vivoEnv: vivoEnv,
-	    resultPath: path.join(process.cwd(), id, 'requestStateUncompressed.json')
+	    resultPath: path.join(process.cwd(), id, 'requestStateUncompressed.json'),
+	    emailUser: emailUser
 	});
     },
     flushOutdatedRequests : function(){
@@ -109,11 +119,8 @@ Request.methods = {
 	this.status = newStatus;
 	return true;
     },
-    getStatus : function(){
-	return this.status;
-    },
     getDetailedStatus : function(){
-	switch(this.getStatus()){
+	switch(this.status){
 	case 1:
 	default:
 	    return "Created";
@@ -122,10 +129,16 @@ Request.methods = {
 	case 3:
 	    return "In-Processing";
 	case 4:
+	case 5:
 	    return "Processed";
 	}
     },
+    getState : function(){
+	return this.state;
+    },
     getRemainingTime : function(unit){
+	if(this.getDetailedStatus() == "Processed")
+	    return {remainingDuration: 0, unit: 'min'};
 	switch(unit){
 	case 'min':
 	default:
