@@ -1,5 +1,6 @@
 var fs = require('fs'),
     mongoose = require('mongoose'),
+    mkdirp = require('mkdirp'),
     rimraf = require('rimraf'),
     async = require('async');
 
@@ -90,4 +91,30 @@ utils.createPendingRequest = function(id, requestData, callback){
 		    callback(null, result.uuid);
 		}
 	    });
+};
+
+utils.setRequestFinished = function(request, results_data, callback){
+    request.setStatus(3);
+    request.setStatus(4);
+    try{
+	saveResultsUncompressed(request.uuid, JSON.stringify(results_data));
+	request.save(function(err, result){
+	    if(err) callback(err);
+	    else {
+		callback(null, result);
+	    }
+	});
+    } catch (err){
+	callback(err);
+    }
+};
+
+var pathToResults = path.join(process.cwd(), 'requests');
+function saveResultsUncompressed(id, results){
+    mkdirp.sync(path.join(pathToResults, id));
+    fs.writeFileSync(path.join(pathToResults, id, 'requestStateUncompressed.json') , results, 'utf-8');
+};
+
+function loadResultsUncompressed(id){
+    return fs.readFileSync(path.join(pathToResults, id, 'requestStateUncompressed.json'), 'utf-8'); 
 };
