@@ -3,8 +3,7 @@ var scheduler = require('./lib/scheduler/'),
     async = require('async'),
     mailer = require('./lib/mailer/');
 
-var timeoutPendingRequets = 0;
-var timeoutNotifications = 0;
+var intervalTimeout = 15 * 1000 * 60;
 
 var app = {};
 
@@ -16,30 +15,32 @@ app.launchPendingRequests = function(callback){
     ], function(err, requestId, timeoutInterval){
 	if(err)
 	    callback(new Error("Error "+err+" while launching pending requests."));
-	else if(!requestId)
-	    callback(new Error("No pending requests exist"));
-	else
-	    callback(null, requestId);
+	else if(!requestId) 
+	    callback(null, "No pending requests exist");
+	else {
+	    intervalTimeout = timeoutInterval;
+	    callback(null, "Request "+requestId+" launched");
+	}
     });
 }
 
-app.notifyFinishedRequests = function(){
+app.notifyFinishedRequests = function(callback){
     async.waterfall([
 	queryer.getCountFinishedRequests,
 	executeNext(queryer.getFinishedRequests),
 	mailer.notifyOwners
-    ], function(err, request){
+    ], function(err, numberNotified){
 	if(err)
-	    console.log( "Errors "+err+" while notifying owners" );
+	    callback(new Error("Errors "+err+" while notifying owners" ));
 	else
-	    console.log( "Successfully notified all owners" );
+	    callback(null, numberNotified);
     });
 }
 
 var executeNext = function(next){
      return function(count, callback){
 	if(count > 0)
-	    queryer.getNextRequest(callback);
+	    next(callback);
 	else{
 	    callback(null, '');
 	}
@@ -47,7 +48,29 @@ var executeNext = function(next){
 }
 
 var executeScript = function(){
-    app.launchPendingRequests();    
+    async.waterfall(
+	[
+	    app.launchPendingRequests,
+	    function(err, result, callback){
+		if(err)
+		    console.log( "LaunchPendingRequests failed"  );
+		else
+		    console.log( result );
+		callback(null);
+	    },
+	    app.notifyFinishedRequests,
+	    function(err, count, callback){
+		if(err)
+		    console.log( "Notifying finished requests failed"  );
+		else
+		    console.log( "Successfully Notified "+count+" requests"  );
+		callback(null);
+	    }
+	],
+	function(err){
+	    console.log( "Executor finished. Rescheduling in "+(intervalTimeout/(60 * 1000))+" minutes");
+	    setTimeout(executeScript, intervalTimeout);
+	});
 };
 
 
