@@ -51,11 +51,8 @@ var executeScript = function(){
     async.waterfall(
 	[
 	    app.launchPendingRequests,
-	    function(err, result, callback){
-		if(err)
-		    console.log( "LaunchPendingRequests failed"  );
-		else
-		    console.log( result );
+	    function(result, callback){
+		console.log( result );
 		callback(null);
 	    },
 	    app.notifyFinishedRequests,
