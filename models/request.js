@@ -12,7 +12,7 @@ var Request = new Schema({
     // 3 : In-Processing
     // 4 : Processed
     // 5 : Notified
-    status : { type: Number, min: 1, max: 4, default:1 },
+    status : { type: Number, min: 1, max: 5, default:1 },
     state : {type : String, default:'\n'},
     sequence : {type: String, trim: true },
     accessionNumber : {type: String, default: '', trim : true},
@@ -112,7 +112,7 @@ Request.methods = {
     },
     setStatus : function(newStatus){
 	//status is always between 1 and 4, and is always incremented by 1
-	if( newStatus > 4 || newStatus< 1 || newStatus - 1 !== this.status) {
+	if( newStatus > 5 || newStatus< 1 || newStatus - 1 !== this.status) {
             return false;
 	}
 	
