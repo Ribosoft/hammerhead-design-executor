@@ -56,16 +56,18 @@ var executeScript = function(){
 		callback(null);
 	    },
 	    app.notifyFinishedRequests,
-	    function(err, count, callback){
-		if(err)
-		    console.log( "Notifying finished requests failed"  );
-		else
+	    function(count, callback){
+		if(count)
 		    console.log( "Successfully Notified "+count+" requests"  );
+		else
+		    console.log( "No requests to be notified" );
 		callback(null);
 	    }
 	],
 	function(err){
-	    console.log( "Executor finished. Rescheduling in "+(intervalTimeout/(60 * 1000))+" minutes");
+	    if(err)
+		console.log( "Process failed because of "+err );
+	    console.log( "Executor finished . Rescheduling in "+(intervalTimeout/(60 * 1000))+" minutes");
 	    setTimeout(executeScript, intervalTimeout);
 	});
 };
