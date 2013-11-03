@@ -31,7 +31,7 @@ app.notifyFinishedRequests = function(callback){
 	mailer.notifyOwners
     ], function(err, numberNotified){
 	if(err)
-	    callback(new Error("Errors "+err+" while notifying owners" ));
+	    callback(new Error("Errors "+err+" while notifying owners" ), 0);
 	else
 	    callback(null, numberNotified);
     });
