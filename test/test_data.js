@@ -14,6 +14,7 @@ module.exports = {
 	    right_arm_min : 3,
 	    right_arm_max : 8,
 	    emailUser : '',
+	    promoter : true,
 	    env: {
 		type: 'vitro',
 		target: ''
