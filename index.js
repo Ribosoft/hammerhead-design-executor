@@ -50,7 +50,7 @@ var executeScript = function(){
     async.waterfall(
 	[
 	    queryer.getCountRunningRequests,
-	    function(callback, count) {
+	    function(count, callback) {
 		if(count <= 0)
 		    callback(null);
 		else
