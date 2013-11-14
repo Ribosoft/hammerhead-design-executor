@@ -18,7 +18,6 @@ app.launchPendingRequests = function(callback){
 	else if(!requestId) 
 	    callback(null, "No pending requests exist");
 	else {
-	    intervalTimeout = timeoutInterval;
 	    callback(null, "Request "+requestId+" launched");
 	}
     });
@@ -50,6 +49,13 @@ var executeNext = function(next){
 var executeScript = function(){
     async.waterfall(
 	[
+	    queryer.getCountRunningRequests,
+	    function(callback, count) {
+		if(count <= 0)
+		    callback(null);
+		else
+		    callback(new Error("There is still one request running"));
+	    },
 	    app.launchPendingRequests,
 	    function(result, callback){
 		console.log( result );
