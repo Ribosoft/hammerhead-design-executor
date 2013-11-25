@@ -36,6 +36,20 @@ app.notifyFinishedRequests = function(callback){
     });
 }
 
+app.handleRunningRequests = function(callback){
+    async.waterfall([
+	queryer.getRunningRequest,
+	queryer.updateRunningRequestDuration,
+	queryer.stopBlockedRequest
+    ], function(err){
+	if(err)
+	    callback(new Error("Errors "+err+" while updating running request" ));
+	else
+	    callback(null);
+    });
+};
+
+
 var executeNext = function(next){
      return function(count, callback){
 	if(count > 0)
@@ -53,8 +67,10 @@ var executeScript = function(){
 	    function(count, callback) {
 		if(count <= 0)
 		    callback(null);
-		else
+		else {
+		    
 		    callback(new Error("There is still one request running"));
+		}
 	    },
 	    app.launchPendingRequests,
 	    function(result, callback){
