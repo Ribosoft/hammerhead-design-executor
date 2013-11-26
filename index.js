@@ -44,7 +44,10 @@ app.handleRunningRequests = function(callback){
 	mailer.notifyOwnerRequestFailed
     ], function(err, result){
 	if(err){
-	    callback(new Error("Error "+err.message+" while updating running request" ));
+	    if(err.message == "No running request")
+		callback(null, "No running request");
+	    else
+		callback(new Error("Error "+err.message+" while updating running request" ));
 	}
 	else if(result)
 	    callback(null, "Result of running request "+result);
