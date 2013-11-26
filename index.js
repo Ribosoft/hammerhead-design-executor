@@ -40,10 +40,12 @@ app.handleRunningRequests = function(callback){
     async.waterfall([
 	queryer.getRunningRequest,
 	queryer.updateRunningRequestDuration,
-	queryer.stopBlockedRequest
+	queryer.stopBlockedRequest,
+	mailer.notifyOwnerRequestFailed
     ], function(err, result){
-	if(err)
-	    callback(new Error("Errors "+err+" while updating running request" ));
+	if(err){
+	    callback(new Error("Error "+err.message+" while updating running request" ));
+	}
 	else if(result)
 	    callback(null, "Result of running request "+result);
 	else

@@ -110,6 +110,22 @@ utils.setRequestFinished = function(request, results_data, callback){
     }
 };
 
+utils.setRequestBlocked = function(request, results_data, callback){
+    request.setStatus(3);
+    request.setRemainingTime({remainingDuration: 0, unit:'min'});
+    try{
+	request.save(function(err, result){
+	    if(err) callback(err);
+	    else {
+		callback(null, result);
+	    }
+	});
+    } catch (err){
+	callback(err);
+    }
+};
+
+
 var pathToResults = path.join(process.cwd(), 'requests');
 function saveResultsUncompressed(id, results){
     mkdirp.sync(path.join(pathToResults, id));
