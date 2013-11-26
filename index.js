@@ -41,9 +41,11 @@ app.handleRunningRequests = function(callback){
 	queryer.getRunningRequest,
 	queryer.updateRunningRequestDuration,
 	queryer.stopBlockedRequest
-    ], function(err){
+    ], function(err, result){
 	if(err)
 	    callback(new Error("Errors "+err+" while updating running request" ));
+	else if(result)
+	    callback(null, "Result of running request "+result);
 	else
 	    callback(null);
     });
@@ -63,12 +65,17 @@ var executeNext = function(next){
 var executeScript = function(){
     async.waterfall(
 	[
+	    app.handleRunningRequests,
+	    function(result, callback){
+		if(result)
+		    console.log( result );
+		callback(null);
+	    },
 	    queryer.getCountRunningRequests,
 	    function(count, callback) {
 		if(count <= 0)
 		    callback(null);
 		else {
-		    
 		    callback(new Error("There is still one request running"));
 		}
 	    },
