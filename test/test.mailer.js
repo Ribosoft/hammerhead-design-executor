@@ -73,18 +73,18 @@ describe('Notifying blocked requests', function(){
     before(function(done){
 	test_utils.emptyDb(done);
     });
-/*	
+	
     it('No notification if no request is blocked', function(done){
 	app.handleRunningRequests(function(err, result){
 	    if(err){
-		err.message.should.include("No running request");
-		done();
+		done(err);
 	    } else {
-		done("handleRunningRequests found some running request");
+		result.should.include("No running request");
+		done();
 	    }
 	});
     });
-*/
+
 
     it('Blocked request causes notification to be sent', function(done){
 	var requestData = test_data.longSequence.request;
