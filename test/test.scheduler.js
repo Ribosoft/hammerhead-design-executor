@@ -35,7 +35,7 @@ describe('Scheduling pending requests', function(){
 	    }
 	});
     });
-/*
+
     it('Designed request should be launched', function(done){
 	var requestData = test_data.longSequence.request;
 	async.waterfall(
@@ -58,7 +58,7 @@ describe('Scheduling pending requests', function(){
 		    done();
 		} 
 	    });
-    });*/
+    });
 });
 
 // Always keep last
