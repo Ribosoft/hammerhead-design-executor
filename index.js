@@ -64,8 +64,8 @@ var executeNext = function(next){
 	else{
 	    callback(null, '');
 	}
-    }
-}
+    };
+};
 
 var executeScript = function(){
     async.waterfall(
