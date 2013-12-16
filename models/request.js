@@ -1,4 +1,4 @@
-var mongoose = require('mongoose')
+var mongoose = require('mongoose'),
     path = require('path');
 var Schema = mongoose.Schema;
 
@@ -18,6 +18,7 @@ var Request = new Schema({
     accessionNumber : {type: String, default: '', trim : true},
     foldShape : String,
     emailUser : {type: String, default: '', trim : true},
+    organization : {type: String, default: '', trim : true},
     tempEnv : {type: Number, default: 37},
     naEnv: {type: Number, default: 0},
     mgEnv: {type: Number, default: 0},
@@ -54,7 +55,8 @@ Request.statics = {
 			      left_arm_max,
 			      right_arm_max,
 			      promoter,
-			      emailUser){
+			      emailUser,
+			      organization){
 	return new this({
             uuid : id,
             status : 2,
@@ -75,26 +77,8 @@ Request.statics = {
 	    targetEnv: targetEnv,
 	    vivoEnv: vivoEnv,
 	    resultPath: path.join(process.cwd(), id, 'requestStateUncompressed.json'),
-	    emailUser: emailUser
-	});
-    },
-    flushOutdatedRequests : function(){
-	var weekAgo = new Date();
-	weekAgo.setDate(weekAgo.getDate() - config.expirationDelay);
-	this.find({createDate:{"$lte":weekAgo}}, function(err, result, count){
-            if(err)
-		console.log("Could not find old requests");
-            else if(!result)
-		console.log("No request to flush");
-            else {
-		result.forEach(function(element){
-                    element.remove(function(err, result){
-			if(err)
-                            console.log("Could not delete request");
-                    }); 
-		});
-		console.log("Database flushed for "+count+" old requests.");
-            }
+	    emailUser: emailUser,
+	    organization : organization
 	});
     }
 };
@@ -110,8 +94,22 @@ Request.methods = {
 	return (this.targetEnv)? 'vivo':'vitro';
     },
     getRegion : function(){
-	return (this.targetRegion === 4)? 'ORF':
-            (this.targetRegion === 5)?'5\'':'3\'';
+	switch(this.targetRegion){
+	case 3 :
+	    return ['3\''];
+	case 4 :
+	default:
+	    return ['ORF'];
+	case 5 :
+	    return ['5\''];
+	case 7 :
+	    return ['3\'', 'ORF'];
+	case 9 :
+	    return ['ORF', '5\''];
+	case 12 :
+	    return ['3\'', 'ORF', '5\''];
+
+	}
     },
     setStatus : function(newStatus){
 	//status is always between 1 and 5, and is always incremented by 1

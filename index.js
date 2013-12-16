@@ -56,6 +56,18 @@ app.handleRunningRequests = function(callback){
     });
 };
 
+app.collectAnalytics = function(callback){
+    async.waterfall([
+	queryer.getListOrganizations,
+	mailer.notifyAdmin
+    ], function(err, result){
+	if(err){
+	    callback(err);
+	}
+	callback(null, result);
+    });
+}
+
 
 var executeNext = function(next){
      return function(count, callback){
@@ -96,7 +108,8 @@ var executeScript = function(){
 		else
 		    console.log( "No requests to be notified" );
 		callback(null);
-	    }
+	    },
+	    app.collectAnalytics
 	],
 	function(err){
 	    if(err)
