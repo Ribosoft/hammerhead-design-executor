@@ -63,8 +63,10 @@ app.collectAnalytics = function(callback){
     ], function(err, result){
 	if(err){
 	    callback(err);
+	} else {
+	    console.log( "List of "+result+" organization names was sent" );
+	    callback(null, result);
 	}
-	callback(null, result);
     });
 }
 
@@ -108,8 +110,7 @@ var executeScript = function(){
 		else
 		    console.log( "No requests to be notified" );
 		callback(null);
-	    },
-	    app.collectAnalytics
+	    }
 	],
 	function(err){
 	    if(err)
@@ -124,4 +125,5 @@ if (module !== require.main) {
     module.exports = exports = app;
 } else {
     executeScript();
+    setInterval(app.collectAnalytics, 1000 * 60 * 60 * 24 * 7); //every week
 }
