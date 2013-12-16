@@ -117,6 +117,51 @@ describe('Notifying blocked requests', function(){
 });
 
 
+describe('Collecting analytics', function(){
+    this.timeout(5 * 1000); //times out at 5 seconds
+    before(function(done){
+	test_utils.emptyDb(done);
+    });
+	
+    it('Notify admin with list of organizations', function(done){
+	var request1 = test_data.multipleRequests.request1;
+	var request2 = test_data.multipleRequests.request2;
+	var request3 = test_data.multipleRequests.request2;
+	async.waterfall(
+	    [
+		function(callback){
+		    callback(null, '1234', request1);
+		},
+		test_utils.createRequest,
+		test_utils.saveRequest,
+		function(request, callback){
+		    callback(null, '4321', request2);
+		},
+		test_utils.createRequest,
+		test_utils.saveRequest,
+		function(request, callback){
+		    callback(null, '5678', request3);
+		},
+		test_utils.createRequest,
+		test_utils.saveRequest,
+		function(request, callback){
+		    callback(null);
+		},
+		app.collectAnalytics
+	    ],function(err, count){
+		if(err){
+		    done(err);
+		} else {
+		    count.should.equal(2);
+		    done();
+		}
+	    });
+    });
+
+});
+
+
+
 // Always keep last
 after(function(done){
     test_utils.rmDirIfExists(pathToDir);

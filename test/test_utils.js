@@ -1,8 +1,9 @@
 var fs = require('fs'),
-mongoose = require('mongoose'),
-mkdirp = require('mkdirp'),
-rimraf = require('rimraf'),
-async = require('async');
+    mongoose = require('mongoose'),
+    mkdirp = require('mkdirp'),
+    rimraf = require('rimraf'),
+    async = require('async'),
+    path = require('path');
 
 var Request = mongoose.model('Request');
 
@@ -58,8 +59,9 @@ utils.createRequest = function(id, test_data, callback){
 				    test_data.left_arm_max,
 				    test_data.right_arm_max,
 				    test_data.promoter,
-				    'ribosoft.mailer@gmail.com'
-				   )
+				    'ribosoft.mailer@gmail.com',
+				    test_data.organization
+				   );
     callback(null, req);
 }
 
