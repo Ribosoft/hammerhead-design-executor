@@ -33,6 +33,7 @@ var Request = new Schema({
     //targetEnv = false for vitro, true for vivo
     targetEnv : Boolean,
     vivoEnv : {type: String, default:""},
+    specificity : {type: String},
     remainingDuration: {type: Number, default:120},
     resultPath : String
 });
@@ -55,6 +56,7 @@ Request.statics = {
 			      left_arm_max,
 			      right_arm_max,
 			      promoter,
+			      specificity,
 			      emailUser,
 			      organization){
 	return new this({
@@ -76,6 +78,7 @@ Request.statics = {
 	    targetRegion: targetRegion,
 	    targetEnv: targetEnv,
 	    vivoEnv: vivoEnv,
+	    specificity: specificity,
 	    resultPath: path.join(process.cwd(), id, 'requestStateUncompressed.json'),
 	    emailUser: emailUser,
 	    organization : organization
