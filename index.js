@@ -65,7 +65,9 @@ app.collectAnalytics = function(callback){
 	    callback(err);
 	} else {
 	    console.log( "List of "+result+" organization names was sent" );
-	    callback(null, result);
+	    if(callback) {
+	    	callback(null, result);
+	    }
 	}
     });
 }
