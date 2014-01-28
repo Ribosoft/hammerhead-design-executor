@@ -1,7 +1,8 @@
 var scheduler = require('./lib/scheduler/'),
     queryer = require('./lib/queryer/'),
     async = require('async'),
-    mailer = require('./lib/mailer/');
+    mailer = require('./lib/mailer/'),
+    config = require('./config/config.json');
 
 var intervalTimeout = 15 * 1000 * 60;
 
@@ -129,3 +130,9 @@ if (module !== require.main) {
     executeScript();
     setInterval(app.collectAnalytics, 1000 * 60 * 60 * 24 * 7); //every week
 }
+
+process.on('uncaughtException', function(err) {
+    if(config.reporter)
+	mailer.notifyErrors(err.stack,function(){});
+});
+
