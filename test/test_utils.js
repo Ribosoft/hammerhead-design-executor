@@ -59,6 +59,7 @@ utils.createRequest = function(id, test_data, callback){
 				    test_data.left_arm_max,
 				    test_data.right_arm_max,
 				    test_data.promoter,
+				    test_data.specificity,
 				    'ribosoft.mailer@gmail.com',
 				    test_data.organization
 				   );
@@ -67,8 +68,7 @@ utils.createRequest = function(id, test_data, callback){
 
 utils.saveRequest = function(request, callback){
     request.save(function(err, request){
-	if(err)
-	{
+	if(err)	{
 	    callback(err);
 	}
 	else{
