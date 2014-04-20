@@ -1,16 +1,10 @@
-var algorithm = require('hammerhead-design'),
-    should = require('should'),
+var should = require('should'),
     async = require('async'),
     fs = require('fs'),
     app = require('../index.js'),
     mongoose = require('mongoose'),
     test_data = require('./test_data.js'),
     test_utils = require('./test_utils.js');
-
-var RequestExecutor = algorithm.HandleRequest;
-var AlgoRequest = algorithm.Model.DomainObjects.Request;
-
-var Request = mongoose.model('Request');
 
 var testID = 'Test';
 var pathToDir = process.cwd()+'/'+testID;
@@ -159,8 +153,6 @@ describe('Collecting analytics', function(){
     });
 
 });
-
-
 
 // Always keep last
 after(function(done){
