@@ -29,8 +29,8 @@ describe('Algorithm library', function(){
                 'left_arm_min': 3,
                 'right_arm_min': 3,
                 'left_arm_max':10,
-                'right_arm_max':10
-
+                'right_arm_max':10,
+		'promoter' : 'TAATACGACTCACTATAGGG'
             },
             testID,
             0,//CoreType

@@ -99,13 +99,7 @@ describe('Notifying blocked requests', function(){
 		}
 	    ],
 	    function(err, result){
-		if(err){
-		    done(err);
-		}
-		else {
-		    result.should.include("Notified owner of blocked process");
-		    done();
-		} 
+		done(err);
 	    });
     });
 });
