@@ -43,7 +43,7 @@ describe('Scheduling pending requests', function(){
 		function(callback){
 		    callback(null, testID, requestData);
 		},
-		utils.createPendingRequest,
+		test_utils.createPendingRequest,
 		function(id, callback){
 		    app.launchPendingRequests(callback);
 		}
@@ -73,9 +73,9 @@ describe('Stopping blocked request', function(){
 		function(callback){
 		    callback(null, testID, requestData);
 		},
-		utils.createRequest,
-		utils.saveRequest,
-		utils.setRequestBlocked,
+		test_utils.createRequest,
+		test_utils.saveRequest,
+		test_utils.setRequestBlocked,
 		app.handleRunningRequests,
 		function(id, callback){
 		    app.launchPendingRequests(callback);

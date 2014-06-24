@@ -43,7 +43,6 @@ app.handleRunningRequests = function(callback){
 	queryer.getRunningRequest,
 	queryer.updateRunningRequestDuration
     ], function(err, request){
-	var remaining = request.getRemainingTime('min').remainingDuration;
 	if(err){
 	    if(err.message == "No running request")
 		callback(null, "No running request");
@@ -51,6 +50,7 @@ app.handleRunningRequests = function(callback){
 		callback(new Error("Error "+err.message+" while updating running request" ));
 	}
 	else {
+	    var remaining = request.getRemainingTime('min').remainingDuration;
 	    console.log( 'Request '+request.uuid+' running for another '+remaining+' mins'  );
 	    //Only collect memory usage when a process is running
 	    collectMemoryUsage();
