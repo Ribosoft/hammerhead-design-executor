@@ -12,7 +12,7 @@ var AlgoRequest = algorithm.Model.DomainObjects.Request;
 
 var Request = mongoose.model('Request');
 
-var testID = 'Test';
+var testID = 'Tes1';
 var pathToDir = process.cwd()+'/'+testID;
 
 beforeEach(function(done){
@@ -43,7 +43,7 @@ describe('Scheduling pending requests', function(){
 		function(callback){
 		    callback(null, testID, requestData);
 		},
-		utils.createPendingRequest,
+		test_utils.createPendingRequest,
 		function(id, callback){
 		    app.launchPendingRequests(callback);
 		}

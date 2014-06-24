@@ -2,7 +2,8 @@ var scheduler = require('./lib/scheduler/'),
     queryer = require('./lib/queryer/'),
     async = require('async'),
     mailer = require('./lib/mailer/'),
-    config = require('./config/');
+    config = require('./config/'),
+    util = require('util');
 
 var intervalTimeout = 15 * 1000 * 60; //Every 15 mins
 
@@ -49,11 +50,11 @@ app.handleRunningRequests = function(callback){
 		callback(null, "No running request");
 	    else
 		callback(new Error("Error "+err.message+" while updating running request" ));
-	}
-	else if(result)
+	} else if (result) {
 	    callback(null, "Result of running request "+result);
-	else
+	} else {
 	    callback(null);
+	}
     });
 };
 
@@ -72,6 +73,10 @@ app.collectAnalytics = function(callback){
 	}
     });
 }
+
+function collectMemoryUsage(){
+    console.log( "Memory Usage", util.inspect(process.memoryUsage()) );
+};
 
 
 var executeNext = function(next){
@@ -118,7 +123,7 @@ var executeScript = function(){
 	function(err){
 	    if(err)
 		console.log( "Process failed because of "+err );
-	    console.log( "Executor finished . Rescheduling in "+(intervalTimeout/(60 * 1000))+" minutes");
+	    console.log( "Executor finished. Rescheduling in "+(intervalTimeout/(60 * 1000))+" minutes");
 	    setTimeout(executeScript, intervalTimeout);
 	});
 };

@@ -7,7 +7,7 @@ var algorithm = require('hammerhead-design'),
 var RequestExecutor = algorithm.HandleRequest;
 var AlgoRequest = algorithm.Model.DomainObjects.Request;
 
-var testID = 'Test';
+var testID = 'Tes1';
 var pathToDir = process.cwd()+'/'+testID;
 
 beforeEach(function(done){
@@ -29,8 +29,8 @@ describe('Algorithm library', function(){
                 'left_arm_min': 3,
                 'right_arm_min': 3,
                 'left_arm_max':10,
-                'right_arm_max':10
-
+                'right_arm_max':10,
+		'promoter' : 'TAATACGACTCACTATAGGG'
             },
             testID,
             0,//CoreType
