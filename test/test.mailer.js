@@ -63,7 +63,7 @@ describe('Notifying finished requests', function(){
 
 
 describe('Notifying blocked requests', function(){
-    this.timeout(5 * 1000); //times out at 5 seconds
+    this.timeout(10 * 1000); //times out at 10 seconds
     before(function(done){
 	test_utils.emptyDb(done);
     });
@@ -106,7 +106,7 @@ describe('Notifying blocked requests', function(){
 
 
 describe('Collecting analytics', function(){
-    this.timeout(5 * 1000); //times out at 5 seconds
+    this.timeout(10 * 1000); //times out at 10 seconds
     before(function(done){
 	test_utils.emptyDb(done);
     });

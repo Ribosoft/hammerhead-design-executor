@@ -41,20 +41,19 @@ app.notifyFinishedRequests = function(callback){
 app.handleRunningRequests = function(callback){
     async.waterfall([
 	queryer.getRunningRequest,
-	queryer.updateRunningRequestDuration
-    ], function(err, request){
+	queryer.updateRunningRequestDuration,
+	queryer.stopBlockedRequest,
+	mailer.notifyOwnerRequestFailed
+    ], function(err, result){
 	if(err){
 	    if(err.message == "No running request")
 		callback(null, "No running request");
 	    else
 		callback(new Error("Error "+err.message+" while updating running request" ));
-	}
-	else {
-	    var remaining = request.getRemainingTime('min').remainingDuration;
-	    console.log( 'Request '+request.uuid+' running for another '+remaining+' mins'  );
-	    //Only collect memory usage when a process is running
-	    collectMemoryUsage();
-	    callback(null, remaining);
+	} else if (result) {
+	    callback(null, "Result of running request "+result);
+	} else {
+	    callback(null);
 	}
     });
 };
@@ -94,11 +93,9 @@ var executeScript = function(){
     async.waterfall(
 	[
 	    app.handleRunningRequests,
-	    function(remaining, callback){
-		if(remaining == 0){
-		    console.log( "A task was completed. Shutting down..." );
-		    throw new Error("A task was completed. Shutting down");
-		}
+	    function(result, callback){
+		if(result)
+		    console.log( result );
 		callback(null);
 	    },
 	    queryer.getCountRunningRequests,
