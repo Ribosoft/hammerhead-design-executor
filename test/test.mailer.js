@@ -6,7 +6,7 @@ var should = require('should'),
     test_data = require('./test_data.js'),
     test_utils = require('./test_utils.js');
 
-var testID = 'Test';
+var testID = 'Tes1';
 var pathToDir = process.cwd()+'/'+testID;
 
 beforeEach(function(done){
